@@ -1,8 +1,12 @@
 # Import necessary libraries
 import numpy as np
-import pandas as pd
-from sklearn.model_selection import train_test_split
 import tensorflow as tf
+from sklearn.model_selection import train_test_split
+
+# Check if TensorFlow is available
+if not tf.__version__:
+    print("TensorFlow could not be found. Please check that it is installed and available.")
+    exit()
 
 try:
     # Load the PlantDoc dataset
@@ -10,15 +14,12 @@ try:
     X = data["X"]
     y = data["y"]
 
-    # Convert the data to a Pandas DataFrame
-    df = pd.DataFrame({"X": X, "y": y})
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-    # Split the dataset into training and testing sets
-    train_df, test_df = train_test_split(df, test_size=0.2)
-
-    # Convert the DataFrames to TensorFlow Datasets
-    train_dataset = tf.data.Dataset.from_tensor_slices((train_df["X"], train_df["y"]))
-    test_dataset = tf.data.Dataset.from_tensor_slices((test_df["X"], test_df["y"]))
+    # Convert the data to TensorFlow Datasets
+    train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
+    test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
 
     # Print the sizes of the training and testing sets
     print(train_dataset.cardinality())
@@ -26,8 +27,6 @@ try:
 except FileNotFoundError:
     print("The PlantDoc dataset could not be found. Please check that the file 'plantdoc_dataset.npz' exists and is in the correct location.")
 except ValueError:
-    print("The data in the PlantDoc dataset could not be converted to a Pandas DataFrame. Please check that the data is in the correct format.")
-except ImportError:
-    print("TensorFlow could not be imported. Please check that TensorFlow is installed and available.")
+    print("The data in the PlantDoc dataset could not be converted to TensorFlow Datasets. Please check that the data is in the correct format.")
 except Exception as e:
     print("An unexpected error occurred:", e)
