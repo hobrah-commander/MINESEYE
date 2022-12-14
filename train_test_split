@@ -4,21 +4,30 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 
-# Load the PlantDoc dataset
-data = np.load("plantdoc_dataset.npz")
-X = data["X"]
-y = data["y"]
+try:
+    # Load the PlantDoc dataset
+    data = np.load("plantdoc_dataset.npz")
+    X = data["X"]
+    y = data["y"]
 
-# Convert the data to a Pandas DataFrame
-df = pd.DataFrame({"X": X, "y": y})
+    # Convert the data to a Pandas DataFrame
+    df = pd.DataFrame({"X": X, "y": y})
 
-# Split the dataset into training and testing sets
-train_df, test_df = train_test_split(df, test_size=0.2)
+    # Split the dataset into training and testing sets
+    train_df, test_df = train_test_split(df, test_size=0.2)
 
-# Convert the DataFrames to TensorFlow Datasets
-train_dataset = tf.data.Dataset.from_tensor_slices((train_df["X"], train_df["y"]))
-test_dataset = tf.data.Dataset.from_tensor_slices((test_df["X"], test_df["y"]))
+    # Convert the DataFrames to TensorFlow Datasets
+    train_dataset = tf.data.Dataset.from_tensor_slices((train_df["X"], train_df["y"]))
+    test_dataset = tf.data.Dataset.from_tensor_slices((test_df["X"], test_df["y"]))
 
-# Print the sizes of the training and testing sets
-print(train_dataset.cardinality())
-print(test_dataset.cardinality())
+    # Print the sizes of the training and testing sets
+    print(train_dataset.cardinality())
+    print(test_dataset.cardinality())
+except FileNotFoundError:
+    print("The PlantDoc dataset could not be found. Please check that the file 'plantdoc_dataset.npz' exists and is in the correct location.")
+except ValueError:
+    print("The data in the PlantDoc dataset could not be converted to a Pandas DataFrame. Please check that the data is in the correct format.")
+except ImportError:
+    print("TensorFlow could not be imported. Please check that TensorFlow is installed and available.")
+except Exception as e:
+    print("An unexpected error occurred:", e)
