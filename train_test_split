@@ -1,15 +1,24 @@
 # Import necessary libraries
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
+import tensorflow as tf
 
-# Load the dataset
-data = np.load("insert_dataset_here.npz")
+# Load the PlantDoc dataset
+data = np.load("plantdoc_dataset.npz")
 X = data["X"]
 y = data["y"]
 
-# Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+# Convert the data to a Pandas DataFrame
+df = pd.DataFrame({"X": X, "y": y})
 
-# Print the shapes of the training and testing sets
-print(X_train.shape)
-print(X_test.shape)
+# Split the dataset into training and testing sets
+train_df, test_df = train_test_split(df, test_size=0.2)
+
+# Convert the DataFrames to TensorFlow Datasets
+train_dataset = tf.data.Dataset.from_tensor_slices((train_df["X"], train_df["y"]))
+test_dataset = tf.data.Dataset.from_tensor_slices((test_df["X"], test_df["y"]))
+
+# Print the sizes of the training and testing sets
+print(train_dataset.cardinality())
+print(test_dataset.cardinality())
