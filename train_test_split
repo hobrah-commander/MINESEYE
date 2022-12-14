@@ -1,0 +1,15 @@
+# Import necessary libraries
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+# Load the dataset
+data = np.load("insert_dataset_here.npz")
+X = data["X"]
+y = data["y"]
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Print the shapes of the training and testing sets
+print(X_train.shape)
+print(X_test.shape)
